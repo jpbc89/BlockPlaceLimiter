@@ -7,18 +7,17 @@ public class BlockPlaceLimiter extends JavaPlugin {
 	Events events;
 	ConfigHandler config = new ConfigHandler(this);
 	DataHandler data = new DataHandler(this);
-	LBData state,max;
+	BPLData bplData;
 	
 	public void onEnable(){
 		config.loadConfig();
-		max = data.loadFlatData("max.obj");
-		state = data.loadFlatData("state.obj");
-		events = new Events(max, state, ConfigHandler.defaultMax);
+		bplData = data.loadFlatData("data.obj");
+		events=new Events(this);
+		events.load(bplData, ConfigHandler.defaultMax);
 		this.getServer().getPluginManager().registerEvents(events, this);
 	}
 	
 	public void onDisable(){
-		data.saveFlatData(max, "max.obj");
-		data.saveFlatData(state, "state.obj");
+		data.saveFlatData(events.getData(), "data.obj");
 	}
 }

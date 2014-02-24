@@ -1,6 +1,7 @@
 package io.github.naumnaum.BlockPlaceLimiter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,7 +11,7 @@ public class ConfigHandler {
 	JavaPlugin plugin;
 	FileConfiguration config;
 
-	static LBArray defaultMax = new LBArray();
+	static HashMap<BPLBlock, Integer> defaultMax = new HashMap<BPLBlock, Integer>();
 	static String overPlaced = "";
 
 	public ConfigHandler(JavaPlugin plugin) {

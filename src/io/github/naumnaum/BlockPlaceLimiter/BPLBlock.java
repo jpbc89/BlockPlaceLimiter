@@ -1,8 +1,11 @@
 package io.github.naumnaum.BlockPlaceLimiter;
 
+import java.io.Serializable;
+
 import org.bukkit.block.Block;
 
-public class BPLBlock {
+@SuppressWarnings("serial")
+public class BPLBlock implements Serializable{
 
 	private int id;
 	private byte meta;
@@ -21,7 +24,8 @@ public class BPLBlock {
 		this.name=name;
 	}
 	
-	public boolean equals(BPLBlock b){
+	public boolean equals(Object o){
+		BPLBlock b = (BPLBlock) o;
 		if (this.id==b.id && this.meta==b.meta)
 			return true;
 		return false;
@@ -29,6 +33,10 @@ public class BPLBlock {
 	
 	public String toString(){
 		return "Id: "+id+" Meta: "+meta+" Name: "+name;
+	}
+	
+	public int hashCode(){
+		return id;
 	}
 	
 	public static BPLBlock parseConfig(String s){
