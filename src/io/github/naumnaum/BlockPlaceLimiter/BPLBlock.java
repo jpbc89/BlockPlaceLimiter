@@ -2,6 +2,7 @@ package io.github.naumnaum.BlockPlaceLimiter;
 
 import java.io.Serializable;
 
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 
 @SuppressWarnings("serial")
@@ -32,7 +33,9 @@ public class BPLBlock implements Serializable{
 	}
 	
 	public String toString(){
-		return "Id: "+id+" Meta: "+meta+" Name: "+name;
+		return ChatColor.LIGHT_PURPLE+"Id: "+ChatColor.RESET+id+
+				ChatColor.LIGHT_PURPLE+" Meta: "+ChatColor.RESET+meta+
+				ChatColor.LIGHT_PURPLE+" Name: "+ChatColor.RESET+name;
 	}
 	
 	public int hashCode(){
@@ -42,6 +45,19 @@ public class BPLBlock implements Serializable{
 	public static BPLBlock parseConfig(String s){
 		int id = Integer.parseInt(s.trim().split(":")[0].trim());
 		byte meta = Byte.parseByte(s.trim().split(":")[1].trim().split("=")[0].trim());
-		return new BPLBlock(id, meta, "config");
+		String name = s.split(":")[2];
+		return new BPLBlock(id, meta, name);
+	}
+	
+	public String getName(){
+		return name;
+	}
+	
+	public int getId(){
+		return id;
+	}
+	
+	public byte getMeta(){
+		return meta;
 	}
 }

@@ -42,7 +42,15 @@ public class Events implements Listener{
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
 		
-		if(!data.restricted(block))
+		if(!data.restricted(block) && !ConfigHandler.usePlayerLimits)
+			return;
+		
+		//if bypass limit
+		if (data.hasMaxBlock(player, block) && data.getMax(player, block)==-2)
+			return;
+		
+		//if using custom limits and player don't get this block
+		if (ConfigHandler.usePlayerLimits && !data.hasMaxBlock(player, block))
 			return;
 		
 		if (data.increase(player, block)){
@@ -60,7 +68,15 @@ public class Events implements Listener{
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
 		
-		if(!data.restricted(block))
+		if(!data.restricted(block) && !ConfigHandler.usePlayerLimits)
+			return;
+		
+		//if bypass limit
+		if (data.hasMaxBlock(player, block) && data.getMax(player, block)==-2)
+			return;
+		
+		//if using custom limits and player don't get this block
+		if (ConfigHandler.usePlayerLimits && !data.hasMaxBlock(player, block))
 			return;
 		
 		if (data.decrease(player, block)){

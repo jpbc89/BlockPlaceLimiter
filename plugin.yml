@@ -1,3 +1,9 @@
 name: BlockPlaceLimiter
 main: io.github.naumnaum.BlockPlaceLimiter.BlockPlaceLimiter
-version: 0.0.1-SNAPSHOT
+version: 1.0a
+commands:
+ bpl:
+  description: This is a demo command.
+  usage: /<command> help
+  permission: <plugin name>.bpl
+  permission-message: You don't have <permission>

@@ -1,8 +1,11 @@
 package io.github.naumnaum.BlockPlaceLimiter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -13,6 +16,50 @@ public class BPLData implements Serializable{
 	private HashMap<String,HashMap<BPLBlock, Integer>> playerBlocks;
 	private HashMap<String,HashMap<BPLBlock, Integer>> playerMaxBlocks;
 	private HashMap<BPLBlock, Integer> defaultMaxBlocks;
+
+	public String[] listDefaultBlocks(){
+		Set<BPLBlock> blocks = defaultMaxBlocks.keySet();
+		ArrayList<String> s=new ArrayList<String>();
+		for (BPLBlock b: blocks){
+			s.add(b.toString() + ChatColor.LIGHT_PURPLE+" Limit: "+ChatColor.RESET+defaultMaxBlocks.get(b));
+		}
+		return s.toArray(new String[s.size()]);
+	}
+	
+	public String[] listPlayerMaxBlocks(String name){
+		init(name);
+		Set<BPLBlock> blocks = playerMaxBlocks.get(name).keySet();
+		ArrayList<String> s=new ArrayList<String>();
+		for (BPLBlock b: blocks){
+			s.add(b.toString() + ChatColor.LIGHT_PURPLE+" Limit: "+ChatColor.RESET+playerMaxBlocks.get(name).get(b));
+		}
+		return s.toArray(new String[s.size()]);
+	}
+	
+	public String[] listPlayerBlocks(String name){
+		init(name);
+		Set<BPLBlock> blocks = playerBlocks.get(name).keySet();
+		ArrayList<String> s=new ArrayList<String>();
+		for (BPLBlock b: blocks){
+			s.add(b.toString() + ChatColor.LIGHT_PURPLE+" Placed: "+ChatColor.RESET+playerBlocks.get(name).get(b));
+		}
+		return s.toArray(new String[s.size()]);
+	}
+	
+	public HashMap<BPLBlock, Integer> getDefaultMaxBlocks(){
+		return this.defaultMaxBlocks;
+	}
+	
+	public boolean hasMaxBlock(Player player, Block block){
+		return hasMaxBlock(player.getName(), new BPLBlock(block));
+	}
+	
+	private boolean hasMaxBlock(String name, BPLBlock bplBlock){
+		this.init(name);
+		if (playerMaxBlocks.get(name).containsKey(bplBlock))
+			return true;
+		return false;
+	}
 	
 	public BPLData(HashMap<String,HashMap<BPLBlock, Integer>> playerBlocks,
 			HashMap<String,HashMap<BPLBlock, Integer>> playerMaxBlocks,
@@ -76,7 +123,11 @@ public class BPLData implements Serializable{
 	}
 	
 	private boolean addBlock(String name,BPLBlock bplBlock){
-		Integer max = playerMaxBlocks.get(name).get(bplBlock);
+		Integer max;
+		max = defaultMaxBlocks.get(bplBlock);
+		if (ConfigHandler.usePlayerLimits){
+			max = playerMaxBlocks.get(name).get(bplBlock);
+		}
 		Integer state = playerBlocks.get(name).get(bplBlock);
 		if(state<max){
 			playerBlocks.get(name).put(bplBlock, ++state);
@@ -113,5 +164,30 @@ public class BPLData implements Serializable{
 	
 	private int getMax(String name, BPLBlock bplBlock){
 		return playerMaxBlocks.get(name).get(bplBlock);
+	}
+	
+	public void setMax(String name, BPLBlock bplBlock, int max){
+		init(name);
+		init(name, bplBlock);
+		playerMaxBlocks.get(name).put(bplBlock, max);
+	}
+	
+	public void delMax(String name, BPLBlock bplBlock){
+		init(name);
+		init(name, bplBlock);
+		playerMaxBlocks.get(name).remove(bplBlock);
+	}
+	
+	public void resetDefault(String name){
+		init(name);
+		playerMaxBlocks.remove(name);
+		init(name);
+	}
+	
+	public void resetData(String name){
+		init(name);
+		playerMaxBlocks.remove(name);
+		playerBlocks.remove(name);
+		init(name);
 	}
 }
